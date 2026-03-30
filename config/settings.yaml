@@ -1,0 +1,34 @@
+project:
+  name: python-selenium-ui-test
+  app_name: orangehrm
+
+execution:
+  browser: chrome
+  headless: false
+  implicit_wait: 0
+  explicit_wait: 15
+  page_load_timeout: 30
+  remote_url: ""
+  screenshot_on_failure: true
+  headless_window_size: "1920,1080"
+
+browser_options:
+  chrome:
+    arguments:
+      - --start-maximized
+      - --disable-dev-shm-usage
+      - --no-sandbox
+  edge:
+    arguments:
+      - --start-maximized
+      - --disable-dev-shm-usage
+  firefox:
+    arguments:
+      - --width=1920
+      - --height=1080
+
+users:
+  default_admin:
+    username: Admin
+    password: admin123
+

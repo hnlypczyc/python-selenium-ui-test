@@ -1,0 +1,46 @@
+pipeline {
+    agent any
+
+    options {
+        timestamps()
+    }
+
+    parameters {
+        choice(name: 'ENV', choices: ['demo', 'test'], description: 'Target environment')
+        choice(name: 'BROWSER', choices: ['chrome', 'edge', 'firefox'], description: 'Browser to execute')
+        booleanParam(name: 'HEADLESS', defaultValue: true, description: 'Run browser in headless mode')
+        booleanParam(name: 'RUN_UI', defaultValue: true, description: 'Execute UI tests')
+        string(name: 'MARKER', defaultValue: 'smoke', description: 'pytest marker expression')
+        string(name: 'WORKERS', defaultValue: '2', description: 'pytest-xdist worker count')
+        string(name: 'REMOTE_URL', defaultValue: '', description: 'Optional Selenium Grid URL')
+    }
+
+    stages {
+        stage('Install Dependencies') {
+            steps {
+                bat 'python -m pip install --upgrade pip'
+                bat 'pip install -r requirements.txt'
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                script {
+                    def remoteArg = params.REMOTE_URL?.trim() ? "--remote-url ${params.REMOTE_URL}" : ''
+                    def runUiArg = params.RUN_UI ? '--run-ui' : ''
+                    def markerArg = params.MARKER?.trim() ? "-m ${params.MARKER}" : ''
+                    def runId = env.BUILD_NUMBER ?: 'local'
+                    def command = "python run.py --env ${params.ENV} --browser ${params.BROWSER} --headless ${params.HEADLESS} ${runUiArg} ${remoteArg} ${markerArg} -n ${params.WORKERS} --run-id ${runId}".trim()
+                    bat command
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            archiveArtifacts artifacts: 'logs/**/*,reports/**/*,screenshots/**/*,allure-results/**/*', allowEmptyArchive: true
+            junit testResults: 'reports/**/*.xml', allowEmptyResults: true
+        }
+    }
+}
