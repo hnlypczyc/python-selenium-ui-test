@@ -36,7 +36,6 @@ def pytest_addoption(parser) -> None:
     parser.addoption("--headless", action="store", default=None, help="Run browser in headless mode.")
     parser.addoption("--remote-url", action="store", default=None, help="Remote Selenium Grid URL.")
     parser.addoption("--base-url", action="store", default=None, help="Override base URL.")
-    parser.addoption("--run-ui", action="store_true", default=False, help="Execute tests marked as ui.")
     parser.addoption("--run-id", action="store", default=None, help="Custom run identifier for reports and logs.")
 
 
@@ -60,15 +59,6 @@ def pytest_configure(config) -> None:
 def pytest_html_report_title(report) -> None:
     report.title = "python-selenium-ui-test Test Report"
 
-
-def pytest_collection_modifyitems(config, items) -> None:
-    if config.getoption("--run-ui"):
-        return
-
-    skip_marker = pytest.mark.skip(reason="UI tests are skipped by default. Add --run-ui to execute browser tests.")
-    for item in items:
-        if "ui" in item.keywords:
-            item.add_marker(skip_marker)
 
 
 @pytest.fixture(scope="session")

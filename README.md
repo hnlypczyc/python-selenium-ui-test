@@ -31,31 +31,31 @@ python -m pip install -r requirements.txt
 执行全部 UI 用例：
 
 ```powershell
-python run.py --run-ui -q
+python run.py -q
 ```run
 
 执行烟雾测试：
 
 ```powershell
-python run.py --run-ui -m smoke -q
+python run.py -m smoke -q
 ```
 
 执行回归测试：
 
 ```powershell
-python run.py --run-ui -m regression -q
+python run.py -m regression -q
 ```
 
 执行报告截图演示用例：
 
 ```powershell
-python run.py --run-ui -m report_demo -q
+python run.py -m report_demo -q
 ```
 
 如果只想看 pytest 默认行为，也可以执行：
 
 ```powershell
-python -m pytest --run-ui -q
+python -m pytest -q
 ```
 
 但更推荐使用 `python run.py ...`，因为它会自动生成：
@@ -116,10 +116,10 @@ allure generate .\allure-results\<run_id> -o .\allure-report\<run_id> --clean
 下面以这条命令为例说明：
 
 ```powershell
-python run.py --run-ui -m report_demo -q
+python run.py -m report_demo -q
 ```
 
-这个命令会执行 `tests\reporting\test_tc99_report_fail_demo.py`，该用例会先登录系统，再故意失败，用于验证 HTML 报告中的截图展示。
+这个命令会执行`tests\reporting\test_tc99_report_fail_demo.py`，该用例会先登录系统，再故意失败，用于验证 HTML 报告中的截图展示。
 
 ### 第 1 步：进入 `run.py`
 
@@ -186,13 +186,12 @@ pytest 在收集和执行测试前，会自动加载项目根目录下的 `conft
 - `--headless`
 - `--remote-url`
 - `--base-url`
-- `--run-ui`
 - `--run-id`
 
 所以命令中的：
 
 ```powershell
---run-ui -m report_demo -q
+-m report_demo -q
 ```
 
 会被 pytest 正确识别。
@@ -256,26 +255,7 @@ load_settings(config.getoption("--env"))
 
 ### 第 6 步：收集测试并筛选
 
-pytest 收集到测试后，会执行：
-
-```python
-pytest_collection_modifyitems(config, items)
-```
-
-当前逻辑是：
-
-- 如果没有 `--run-ui`，所有 `@pytest.mark.ui` 用例会被跳过
-- 如果有 `--run-ui`，UI 用例允许执行
-
-因为当前命令里带了：
-
-```powershell
---run-ui
-```
-
-所以 UI 用例会真正运行。
-
-同时因为命令里有：
+pytest 收集到测试后，因为命令里有：
 
 ```powershell
 -m report_demo
@@ -602,25 +582,25 @@ python -m pip install -r requirements.txt
 执行全部 UI 用例：
 
 ```powershell
-python run.py --run-ui -q
+python run.py -q
 ```
 
 执行烟雾测试：
 
 ```powershell
-python run.py --run-ui -m smoke -q
+python run.py -m smoke -q
 ```
 
 执行回归测试：
 
 ```powershell
-python run.py --run-ui -m regression -q
+python run.py -m regression -q
 ```
 
 执行故障演示用例，验证报告截图：
 
 ```powershell
-python run.py --run-ui -m report_demo -q
+python run.py -m report_demo -q
 ```
 
 启动 Allure 临时报告：
@@ -793,7 +773,7 @@ python-selenium-ui-test/
 Jenkins 最终调用的是：
 
 ```powershell
-python run.py --env ${ENV} --browser ${BROWSER} --headless ${HEADLESS} --run-ui -m ${MARKER} -n ${WORKERS} --run-id ${BUILD_NUMBER}
+python run.py --env ${ENV} --browser ${BROWSER} --headless ${HEADLESS} -m ${MARKER} -n ${WORKERS} --run-id ${BUILD_NUMBER}
 ```
 
 如果 `REMOTE_URL` 有值，则会额外带上：
@@ -825,13 +805,13 @@ reports/**/*.xml
 
 ```powershell
 python -m pip install -r requirements.txt
-python run.py --run-ui -m smoke -q
+python run.py -m smoke -q
 ```
 
 如果做回归，可用：
 
 ```powershell
-python run.py --run-ui -m regression -n 2 -q
+python run.py -m regression -n 2 -q
 ```
 
 ## 8. 如何复制为新项目模板
@@ -890,7 +870,7 @@ python run.py --run-ui -m regression -n 2 -q
 建议至少执行：
 
 ```powershell
-python run.py --run-ui -m smoke -q
+python run.py -m smoke -q
 ```
 
 确认：
