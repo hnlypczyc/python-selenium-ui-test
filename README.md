@@ -31,7 +31,7 @@ python -m pip install -r requirements.txt
 执行全部 UI 用例：
 
 ```powershell
-python run.py ---ui -q
+python run.py --run-ui -q
 ```run
 
 执行烟雾测试：
